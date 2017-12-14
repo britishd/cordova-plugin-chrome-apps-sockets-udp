@@ -10,31 +10,33 @@ Beta on Android and iOS.
 
 The API reference is [here](https://developer.chrome.com/apps/sockets_udp).
 
-# Release Notes
+## Configuration
 
-## 1.3.0 (Sep 27, 2016)
-- Adds `chrome.udp.setBroadcast()`
+You can set next parameters for Sockets:
 
-## 1.2.2 (April 30, 2015)
-- Renamed plugin to pubilsh to NPM
+persistent { boolean	(optional) } - Flag indicating if the socket is left open when the event page of the application is unloaded (see Manage App Lifecycle). The default value is "false." When the application is loaded, any sockets previously opened with persistent=true can be fetched with getSockets.
 
-## 1.2.1 (Mar 17, 2015)
-* Fix multicast socket cannot pause & send receive event synchronously
+name { string (optional) } - An application-defined string associated with the socket.
 
-## 1.2.0 (November 17, 2014)
-* Remove unnecessary headers for chrome.sockets.* - ios
-* Fix possible blocks leak memory
-* Fixed chrome.sockets.udp socket close with error problem
-* Commented out assert that caused app to crash when no network is available.
-* chrome.sockets: open selector in selector thread
-* Don't modify interest set when key is invalid (fix #388)
+bufferSize { integer	(optional) } - The size of the buffer used to receive data. If the buffer is too small to receive the UDP packet, data is lost. The default value is 4096.
 
-## 1.1.0 (October 24, 2014)
-* Add `chrome.sockets.secure.tcp` and refactor `chrome.sockets.*`
+### Work only for IOS devices!
 
-## 1.0.1 (October 23, 2014)
-* Fix a NullPointerException on Android
-* Fix the dependency on iosSocketsCommon so that it works with the Cordova plugin registry.
+disableIPv4 { boolean (optional) } - Flag indicating if the socket should disable IPv4 protocol
 
-## 1.0.0 (October 21, 2014)
-* Initial release
+disableIPv6 { boolean (optional) } - Flag indicating if the socket should disable IPv6 protocol
+
+preferIPv { number (optional) } - Can be **4** or **6** depend on protocol that you prefer.
+
+By default, both IPv4 and IPv6 are enabled.
+This means GCDAsyncUdpSocket automatically supports both protocols, and can send to IPv4 or IPv6 addresses, as well as receive over IPv4 and IPv6.
+ For operations that require DNS resolution, GCDAsyncUdpSocket supports both IPv4 and IPv6.
+ * If a DNS lookup returns only IPv4 results, GCDAsyncUdpSocket will automatically use IPv4.
+ * If a DNS lookup returns only IPv6 results, GCDAsyncUdpSocket will automatically use IPv6.
+ * If a DNS lookup returns both IPv4 and IPv6 results, then the protocol used depends on the configured preference.
+ * If IPv4 is preferred, then IPv4 is used.
+ * If IPv6 is preferred, then IPv6 is used.
+ * If neutral, then the first IP version in the resolved array will be used.
+ 
+ Starting with Mac OS X 10.7 Lion and iOS 5, the default IP preference is neutral.
+ On prior systems the default IP preference is IPv4.

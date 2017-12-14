@@ -132,27 +132,48 @@ static NSString* stringFromData(NSData* data) {
     NSNumber* persistent = theProperties[@"persistent"];
     NSString* name = theProperties[@"name"];
     NSNumber* bufferSize = theProperties[@"bufferSize"];
+    BOOL disableIPv4 = theProperties[@"disableIPv4"];
+    BOOL disableIPv6 = theProperties[@"disableIPv6"];
+    NSNumber* setPreferIPv = theProperties[@"preferIPv"];
 
     if (persistent)
         _persistent = persistent;
-    
+
     if (name)
         _name = name;
-    
+
     if (bufferSize)
         _bufferSize = bufferSize;
-    
-    // Set undefined properties to default value.
-    if (_persistent == nil)
+
+        // Set undefined properties to default value.
+        if (_persistent == nil)
         _persistent = [NSNumber numberWithBool:NO];
-    
+
     if (_name == nil)
         _name = @"";
-    
+
     if (_bufferSize == nil)
         _bufferSize = [NSNumber numberWithInteger:4096];
-    
-    if ([_socket isIPv4]) {
+
+    if (disableIPv4) {
+        [_socket setIPv4Enabled:NO];
+    }
+
+    if (disableIPv6) {
+        [_socket setIPv6Enabled:NO];
+    }
+
+    if ([setPreferIPv isEqualToNumber:[NSNumber numberWithInt:4]]) {
+        [_socket setPreferIPv4];
+    }
+
+    if ([setPreferIPv isEqualToNumber:[NSNumber numberWithInt:6]]) {
+        [_socket setPreferIPv6];
+    }
+
+
+
+if ([_socket isIPv4]) {
         if ([_bufferSize integerValue] > UINT16_MAX) {
            [_socket setMaxReceiveIPv4BufferSize:UINT16_MAX];
         } else {
